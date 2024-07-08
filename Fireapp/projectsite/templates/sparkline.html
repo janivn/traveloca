@@ -1,0 +1,57 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+<div class="page-inner">
+  <h4 class="page-title">Sparkline keme keme</h4>
+  <div class="page-category">Simple yet flexible JavaScript charting for designers & developers. Please checkout their <a href="https://www.chartjs.org/" target="_blank">full documentation</a>.</div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Sparkline</div>
+        </div>
+        <div class="card-body">
+          <div class="chart-container">
+            <canvas id="incidentSparkline"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+{% block chart %}
+<script>
+    function loadSparklineData() {
+        fetch("/sparklineChart/")
+          .then((response) => response.json())
+          .then((data) => {
+            var severityLevels = Object.keys(data);
+            var counts = Object.values(data);
+            var sparkline_chart = document.getElementById("incidentSparkline").getContext("2d");
+
+            var chart = new Chart(sparkline_chart, {
+                type: 'line',
+                data: {
+                    labels: severityLevels,
+                    datasets: [{
+                        label: 'Incident Count',
+                        data: counts,
+                        borderColor: 'rgb(75, 192, 192)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        })
+        .catch((error) => {
+            console.error('Error fetching sparkline data:', error);
+        });
+    }
+
+    window.onload = loadSparklineData;
+</script>
+{% endblock %}

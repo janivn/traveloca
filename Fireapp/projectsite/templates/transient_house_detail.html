@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+{% block context %}
+<div>
+    <h1>{{ transient_house.name }}</h1>
+    <p>Description: {{ transient_house.description }}</p>
+    <p>Price per night: {{ transient_house.price_per_night }}</p>
+    <p>Capacity: {{ transient_house.capacity }}</p>
+
+    <h2>Location:</h2>
+    <p>Address: {{ transient_house.location.address }}</p>
+    <p>City: {{ transient_house.location.city }}</p>
+    <p>Country: {{ transient_house.location.country }}</p>
+    <p>Latitude: {{ transient_house.location.latitude }}</p>
+    <p>Longitude: {{ transient_house.location.longitude }}</p>
+
+    <h2>Rooms:</h2>
+    <ul>
+    {% for room in transient_house.rooms.all %}
+        <li>{{ room.name }} - {{ room.description }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

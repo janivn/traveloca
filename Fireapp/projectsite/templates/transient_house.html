@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<div class="page-inner">
+  <div class="page-header">
+    <h4 class="page-title">Dashboard</h4>
+    <ul class="breadcrumbs">
+      <li class="nav-home">
+        <a href="#">
+          <i class="flaticon-home"></i>
+        </a>
+      </li>
+      <li class="separator">
+        <i class="flaticon-right-arrow"></i>
+      </li>
+      <li class="nav-item">
+        <a href="#">Maps</a>
+      </li>
+      <li class="separator">
+        <i class="flaticon-right-arrow"></i>
+      </li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-transparent">
+        <div class="card-header">
+          <h4 class="card-title text-center">Transient House</h4>
+          <p class="card-category text-center">Looks great on any resolution. Made by our friends from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>.</p>
+        </div>
+        <div class="card-body">
+          <div class="col-md-10 ml-auto mr-auto">
+            <div id="map" style="width: 100%; height: 400px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var map = L.map('map').setView([9.81644, 118.72239], 13);
+    
+    var transientHouseData = {{ transient_house_json|safe }};
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    transientHouseData.forEach(function (data) {
+      var latitude = parseFloat(data.fields.latitude);
+      var longitude = parseFloat(data.fields.longitude);
+      
+      var marker = L.marker([latitude, longitude]).addTo(map);
+
+      var popupContent = "<a href='/transient_house/" + data.pk + "/'>" + data.fields.name + "</a>";
+      var popup = L.popup().setContent(popupContent);
+
+      marker.bindPopup(popup);
+
+      marker.on('click', function (e) {
+        window.location.href = "/transient_house/" + data.pk + "/";
+      });
+    });
+  });
+</script>
+
+{% endblock %}
